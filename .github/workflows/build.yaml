@@ -1,0 +1,24 @@
+name: build
+on: [push]
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-20.04, windows-2019]
+        cfg: [Debug, Release]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Configure CMake
+      run: cmake -S . -B _build -DCMAKE_BUILD_TYPE=${{ matrix.cfg }}
+
+    - name: Build
+      run: cmake --build _build --config ${{ matrix.cfg }}
+
+    - name: Test
+      working-directory: _build
+      run: ctest -C ${{ matrix.cfg }}
