@@ -13,7 +13,7 @@ If you're using CMake, use the FetchContent module.
 FetchContent_Declare(
     avakar.small_function
     GIT_REPOSITORY https://github.com/avakar/small_function.git
-    GIT_TAG master
+    GIT_TAG main
     GIT_SHALLOW 1
     )
 FetchContent_MakeAvailable(avakar.small_function)
