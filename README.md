@@ -105,8 +105,12 @@ struct small_function<R(An...) noexcept(ne), size, align>
     small_function() noexcept;
     
     // Creates the `small_function` object containing `f`.
-    // This constructor only  `f` fits in the storage (see below), `f(an...)` is convertible to `R`,
-    // and the `noexcept(f(an...))` is compatible with `ne`.
+    // This constructor only contributes to the overload set if
+    //
+    // * `f` fits in the storage (see below),
+    // * `f(an...)` is convertible to `R`, and
+    // * either `noexcept(f(an...))` or `!ne`.
+    //
     // The resulting object will be truthy.
     template <typename F>
     small_function(F f) noexcept;
@@ -122,3 +126,7 @@ struct small_function<R(An...) noexcept(ne), size, align>
     small_function & operator=(small_function o) noexcept;
 };
 ```
+
+An object fits in a storage if the size of the storage is sufficient for
+both the object and the maximum padding for alignment. The object might
+have to be padded by as many as `alignof(obj) - alignof(storage)` bytes.
