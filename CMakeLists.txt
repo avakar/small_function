@@ -25,6 +25,7 @@ add_executable(avakar.small_function.test
 	test/test.cpp
 	)
 target_link_libraries(avakar.small_function.test PUBLIC avakar::small_function)
+target_compile_features(avakar.small_function.test PUBLIC cxx_std_20)
 
 add_test(NAME avakar.small_function.test COMMAND avakar.small_function.test)
 

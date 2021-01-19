@@ -41,7 +41,7 @@ struct storage_t<0, align>
 
 
 
-inline constexpr bool fits_in_storage(
+inline constexpr bool _fits_in_storage(
 	std::size_t obj_size, std::size_t obj_align,
 	std::size_t storage_size, std::size_t storage_align)
 {
@@ -55,6 +55,10 @@ inline constexpr bool fits_in_storage(
 
 	return storage_size - max_pad >= obj_size;
 }
+
+template <std::size_t obj_size, std::size_t obj_align, std::size_t storage_size, std::size_t storage_align>
+inline constexpr bool fits_in_storage_v = _fits_in_storage(obj_size, obj_align, storage_size, storage_align);
+
 
 
 
@@ -79,7 +83,7 @@ struct impl
 			(std::is_nothrow_destructible_v<F>
 			&& std::is_nothrow_move_constructible_v<F>
 			&& (noexcept_? std::is_nothrow_invocable_r_v<R, F &, An...>: std::is_invocable_r_v<R, F &, An...>)
-			&& fits_in_storage(real_sizeof_v<F>, alignof(F), storage_size, storage_align)), int> = 0>
+			&& fits_in_storage_v<real_sizeof_v<F>, alignof(F), storage_size, storage_align>), int> = 0>
 	impl(F f) noexcept
 	{
 		static constexpr vtable_t<R, An...> vtable = {
@@ -103,7 +107,7 @@ struct impl
 	}
 
 	template <std::size_t size2, std::size_t align2, bool noexcept2,
-		std::enable_if_t<(fits_in_storage(storage_size, storage_align, size2, align2) && (!noexcept_ || noexcept2)), int> = 0>
+		std::enable_if_t<(fits_in_storage_v<storage_size, storage_align, size2, align2> && (!noexcept_ || noexcept2)), int> = 0>
 	impl(impl<size2, align2, noexcept2, R, An...> && o) noexcept
 		: _vtable(o._vtable)
 	{
