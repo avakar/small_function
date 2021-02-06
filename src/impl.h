@@ -121,7 +121,7 @@ struct impl
 		return _vtable != nullptr;
 	}
 
-	R operator()(An &&... an) noexcept(noexcept_)
+	R operator()(An... an) noexcept(noexcept_)
 	{
 		return _vtable->invoke(this->data(), std::forward<An>(an)...);
 	}

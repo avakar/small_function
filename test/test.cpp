@@ -144,6 +144,17 @@ static void test_realign()
 	require(fn().value == 50);
 }
 
+static void test_pass_lvalue()
+{
+	small_function<int (int)> fn = [](int x) { return x; };
+
+	int x = 1;
+	require(fn(x) == 1);
+
+	small_function<int &(int &)> fn2 = [](int & x) -> int & { return x; };
+	require(&fn2(x) == &x);
+}
+
 #include <iostream>
 int main()
 {
@@ -160,6 +171,7 @@ int main()
 		test_noexcept_convertion();
 		test_deduction();
 		test_realign();
+		test_pass_lvalue();
 	}
 	catch (assertion_failed const & e)
 	{
